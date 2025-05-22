@@ -1,6 +1,7 @@
-import networkx as nx
+
 import itertools
 import numpy as np, colorsys
+import networkx as nx
 import matplotlib.pyplot as plt
 from collections import deque # for finding winning path
 from ast import literal_eval as make_tuple
@@ -8,10 +9,14 @@ import disjoint_set as ds
 import copy
 import sys
 from collections import defaultdict
-import transpositiontable as tt
-import tensorflow as tf
+try:
+    import tensorflow as tf
+    from tensorflow import keras
+except ImportError:
+    print("Module Tensorflow is not installed\n You can't use the neural Network!")
 import time
-from tensorflow import keras
+import transpositiontable as tt
+
 
 class Hexgrid:
     def __init__(self,suchtiefe=2,rows=4,cols=4, cnn=False):
@@ -79,14 +84,10 @@ class Hexgrid:
         self.realnodes = copy.deepcopy(self.G.nodes)
         #player1
         self.G.add_node(self.top_node, resistance1=self.min_resistance,resistance2=self.max_resistance, name=0) # startknoten with resistance 0
-        
-        #TODO: NEEDS TO BE CHAGED I THINK
         self.G.add_node(self.bott_node, resistance1=self.min_resistance,resistance2=self.max_resistance, name=17) # endknoten with resistance 0
         
         #player 2
         self.G.add_node(self.left_node, resistance1=self.max_resistance,resistance2=self.min_resistance, name=-1) # startknoten with resistance 0
-        
-
         self.G.add_node(self.right_node, resistance1=self.max_resistance,resistance2=self.min_resistance, name=18) # endknoten with resistance 0
         
 
@@ -664,6 +665,10 @@ class Hexgrid:
         finished = False
         while(not finished):
             move= input("Make move: format\"(x,x)\" ").strip()
+
+            if "stop" in move:
+                print("Exiting programm...")
+                sys.exit(0)
             try:
                 tuple = make_tuple(move)
             except ValueError:
