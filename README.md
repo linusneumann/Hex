@@ -5,7 +5,7 @@ This repsoitory contains the source code for the Bachelors thesis "Systematische
 The requirements for this project are: 
 ```
 networkx
-matplotlib
+matplotlib (for better representation and for statistics)
 numpy
 tensorflow (only if you want to use the neural network)
 
