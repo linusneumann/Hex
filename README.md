@@ -20,3 +20,13 @@ This will launch a game with search depth 2 and size [size]. For playing against
 Otherwise you will wait very long.
 
 This was testet on Windows 11 with wsl.
+
+The figures were created with the `graphs.py` file.
+You will have to configure it yourself.
+
+To run a tournament execute the file `tournament.py` file.
+
+The dataset used for training is in 
+ ```
+actions/v4-11x11-mohex-mohex-cg2010-vs-mohex-mohex-weak.txt
+```
