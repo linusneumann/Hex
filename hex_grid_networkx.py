@@ -46,7 +46,10 @@ class Hexgrid:
         self.history = defaultdict(int)
         self.G_hex = self.hexagonal_grid_graph(self.rows, self.cols, self.node_resistance, self.average_edge_resistance)
         if cnn:
-            self.cnn = keras.models.load_model("4_64-30-cnntest13x13x5.keras")
+            try:
+                self.cnn = keras.models.load_model("4_64-30-cnntest13x13x5.keras")
+            except ImportError:
+                print("Could not load model. Tensorflow or Keras is not installed!")
         else:
             self.cnn = None
     
@@ -661,7 +664,14 @@ class Hexgrid:
  
 
     def makeplayermove(self,player,suchtiefe=None,time_limit=None):
-        self.displayboard()
+        if 'matplotlib' not in sys.modules:
+            arr = self.converttomatrix()
+            print("  "+ np.array_str(np.arange(arr.shape[0])))
+            for i in range(arr.shape[0]):
+                print(i,arr[i])
+        else:
+            self.displayboard()
+            
         finished = False
         while(not finished):
             move= input("Make move: format\"(x,x)\" ").strip()
@@ -1008,6 +1018,7 @@ if __name__ == "__main__":
     #randommoves = makerandomboard("tournament/hallo123",hg)
     hg.makeplayermove(1)
     #hg.makecnnabsmove(1)
+    hg.makeplayermove(1)
     #arr1 = hg.showboardeval2()
     #hg.displayboard(arr1=arr1)
     #ecken = rows,cols ; 0,cols ; 0,0 ;rows,0
