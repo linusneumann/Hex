@@ -17,8 +17,8 @@ To play a game of Hex against the computer use
 ```
 Make sure you are in the correct directory!
 This will launch a game with search depth 2 and size [size]. For playing against the CNN + ABS i recommend to play only on search depth 1.
-Otherwise you will wait very long.
-After the execution of the script it should look like this (without matplotlib)
+Otherwise you will wait very long.  
+After the execution of the script it should look like this (without matplotlib)  
 ```
   [0 1 2 3 4 5]
 0 [0 0 0 0 0 0]
@@ -29,7 +29,8 @@ After the execution of the script it should look like this (without matplotlib)
 5 [0 0 0 0 0 0]
 Make move: format"(x,x)"
 ```
-
+And this with matplotlib:  
+![graph](graph_pic.png)  
 This was testet on Windows 11 with wsl.
 
 The figures were created with the `graphs.py` file.
