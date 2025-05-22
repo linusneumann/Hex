@@ -13,5 +13,10 @@ tensorflow (only if you want to use the neural network)
 
 To play a game of Hex against the computer use 
 ```
-./insert commadn
+./play.sh [size]
 ```
+Make sure you are in the correct directory!
+This will launch a game with search depth 2 and size [size]. For playing against the CNN + ABS i recommend to play only on search depth 1.
+Otherwise you will wait very long.
+
+This was testet on Windows 11 with wsl.
