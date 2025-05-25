@@ -55,21 +55,20 @@ class Hexgrid:
     
 
     def hexagonal_grid_graph(self,rows, cols, node_resistance_func, edge_resistance_func):
-        """Erstellt ein hexagonales Gitter mit individuellen Knotengewichten und berechnet Kantenwiderstände."""
         
         directions = [(1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1)]  # 6 Richtungen
         num = 1
         if rows != cols:
             print("nicht gültiges spielfeld")
             return
-        # Weise jedem Knoten einen individuellen Widerstandswert zu
+        # give every node their value
         node_resistances = {}
         for q, r in itertools.product(range(cols), range(rows)):
             node_resistances[(q, r)] = node_resistance_func((q, r))
         
-        # Erstelle Kanten basierend auf den Knotengewichten
+        # add edges
         for q, r in itertools.product(range(cols), range(rows)):
-            self.G.add_node((q, r), resistance1=node_resistances[(q, r)],name=num,resistance2=node_resistances[(q,r)])  # Speichere Knotengewicht
+            self.G.add_node((q, r), resistance1=node_resistances[(q, r)],name=num,resistance2=node_resistances[(q,r)])  # speichere knotengewicht
             
 
             num = num +1
@@ -112,15 +111,14 @@ class Hexgrid:
         return self.G
     
     
-    def node_resistance(self,node): # also seems useless
-
+    def node_resistance(self,node):
         return self.specific_resistances.get(node, 1)
 
-# Beispiel: Kantenwiderstand als Mittelwert der Knotenwiderstände
+
     def average_edge_resistance(self,res1, res2):
         return max(round((res1 + res2), 2),self.min_resistance)
 
-# Effektiven Widerstand zwischen zwei Knoten berechnen
+#
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #
 #   
@@ -665,7 +663,7 @@ class Hexgrid:
         else:
             return
  
-
+    #suchtiefe and time_limit are not used in here, only for tournament purpose
     def makeplayermove(self,player,suchtiefe=None,time_limit=None):
         if 'matplotlib' not in sys.modules:
             arr = self.converttomatrix()
@@ -795,6 +793,7 @@ class Hexgrid:
 
                 if np_history.shape != ():
                     #len_moves = len(moves)
+                    #sort the moves based on iterative deepening and heuristic
                     eval_dict = {tuple(move): eval for move, eval in np_history}
                     sorted_dict = sorted(eval_dict.items(),key=lambda x: x[1])
                     sorted_moves = [move for move,_ in sorted_dict]
@@ -841,6 +840,7 @@ class Hexgrid:
 
                 if np_history.shape != ():
                     #len_moves = len(moves)
+                    #sort the moves based on iterative deepening and heuristic
                     eval_dict = {tuple(move): eval for move, eval in np_history}
                     sorted_dict = sorted(eval_dict.items(),key=lambda x: x[1])
                     sorted_moves = [move for move,_ in sorted_dict]

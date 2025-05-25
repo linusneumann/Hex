@@ -110,6 +110,7 @@ def writetofile(data,times,filename,size,game_index,switch=False):
     else:
         all_data = []
 
+    # 2 pages for side switching
     page_found = False
     for page in all_data:
         if page["page"] == current_page:
@@ -117,7 +118,7 @@ def writetofile(data,times,filename,size,game_index,switch=False):
             page_found = True
             break
 
-    # Wenn keine Seite gefunden wurde, eine neue Seite erstellen und anhängen
+    # if no page found-> create it 
     if not page_found:
         new_page = {
             "page": current_page,
