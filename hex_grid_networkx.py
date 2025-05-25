@@ -1030,12 +1030,12 @@ def makerandomboard(dir,board=Hexgrid):
     return moves
 
 if __name__ == "__main__":
-    hg = Hexgrid(2,6,6,cnn=False)
+    hg = Hexgrid(2,5,5,cnn=False)
     #hg.startgame()
     #randommoves = makerandomboard("tournament/hallo123",hg)
     #hg.makeplayermove(1)
-    hg.test(1)
+    #hg.test(1)
     #hg.makeplayermove(1)
     #arr1 = hg.showboardeval2()
-    #hg.displayboard(arr1=arr1)
+    hg.displayboard()
     #ecken = rows,cols ; 0,cols ; 0,0 ;rows,0
