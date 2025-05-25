@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import json
 import numpy as np
 
-with open("13x13x5_4_d5_w128_sparse_cce_dense_64_loss1.json", "r") as f:
+with open("history_4_sparse_cce_64_loss1.json", "r") as f:
     hist1 = json.load(f)
 
 with open("11x11x5_4_d5_w128_sparse_cce_dense_64_acc1.json", "r") as f:
@@ -25,11 +25,12 @@ plt.figure(figsize=(12, 5))
 
 plt.subplot(1, 2, 1)
 #plt.scatter(topk,acc, label='Validation Accuracy')
-plt.plot(hist1['val_loss'], label='d=5, 13x13x5 Validation Loss')
-#plt.plot(hist2['loss'], label='d=5 Train Loss')
-plt.plot(hist2['val_loss'], label='d=5, 11x11x5 Validation Loss')
+
+plt.plot(hist1['loss'], label='Train Loss')
+plt.plot(hist1['val_loss'], label='Validation Loss')
+#plt.plot(hist2['val_loss'], label='d=5, 11x11x5 Validation Loss')
 #plt.plot(hist3['loss'], label='d=6 Train Loss')
-plt.plot(hist3['val_loss'], label='d=5, 11x11x3 Validation Loss')
+#plt.plot(hist3['val_loss'], label='d=5, 11x11x3 Validation Loss')
 plt.xlabel('Epoche',fontsize=16)
 plt.ylabel('Loss',fontsize=16)
 plt.title('Verlustverlauf (Loss)')
@@ -38,12 +39,12 @@ plt.grid(True)
 
 # Plot Accuracy
 plt.subplot(1, 2, 2)
-#plt.plot(hist1['accuracy'], label='d=4 Train Accuracy')
-plt.plot(hist1['val_accuracy'], label='d=5, 13x13x5 Validation Accuracy')
+plt.plot(hist1['accuracy'], label='Train Accuracy')
+plt.plot(hist1['val_accuracy'], label='Validation Accuracy')
 #plt.plot(hist2['accuracy'], label='d=5 Train Accuracy')
-plt.plot(hist2['val_accuracy'], label='d=5, 11x11x5 Validation Accuracy')
+#plt.plot(hist2['val_accuracy'], label='d=5, 11x11x5 Validation Accuracy')
 #plt.plot(hist3['accuracy'], label='d=6 Train Accuracy')
-plt.plot(hist3['val_accuracy'], label='d=5, 11x11x3 Validation Accuracy')
+#plt.plot(hist3['val_accuracy'], label='d=5, 11x11x3 Validation Accuracy')
 plt.xlabel('Epoche',fontsize=16)
 plt.ylabel('Genauigkeit',fontsize=16)
 plt.title('Genauigkeitsverlauf (Accuracy)')
@@ -55,7 +56,7 @@ plt.show()
 
 if __name__ == "__main__":
     
-    with open("tournament/cnnabsplay-2_11-norand.json", "r") as f:
+    with open("tournament/rndabsplay-4_2_7.json", "r") as f:
         data = json.load(f)
         player1_mt = []
         player2_mt = []
@@ -82,7 +83,7 @@ if __name__ == "__main__":
         print(f"player1 red winrate:{player1_red_wins/len1}")
         print(f"player2 red winrate:{player2_red_wins/len2}")
 
-    with open("tournament/cnnabsplay-2_11-norand.json", "r") as f:
+    with open("tournament/rndabsplay-4_2_7.json", "r") as f:
         data = json.load(f)
         player1_mtnoord = []
         player2_mtnoord = []
@@ -112,7 +113,7 @@ if __name__ == "__main__":
     # Boxplot zur Veranschaulichung der Verteilung der mittleren Zeiten
     plt.figure(figsize=(12, 5))
     plt.subplot(1,2,1)
-    plt.plot(player1_mt,  label="Player 1, d=1,CNNABS")
+    plt.plot(player1_mt,  label="Player 1, d=4")
     plt.plot(player2_mt, label="Player 2, d=2")
     #plt.plot(player1_mtnoord,  label="Player 1, d=2, no ordering")
     #plt.plot(player2_mtnoord, label="Player 2, d=2")
@@ -126,8 +127,9 @@ if __name__ == "__main__":
     plt.title('Vor Seitenwechsel')
 
     plt.subplot(1,2,2)
+    plt.plot(player2_mt_sideswitch, label="Player 2, d=4")
     plt.plot(player1_mt_sideswitch,  label="Player 1, d=2")
-    plt.plot(player2_mt_sideswitch, label="Player 2, d=1,CNNABS")
+    
     #plt.plot(player1_mt_sideswitchnoord,  label="Player 1, d=2")
     #plt.plot(player2_mt_sideswitchnoord, label="Player 2, d=2, no ordering")
     plt.title("Verteilung der mittleren Zugzeiten")

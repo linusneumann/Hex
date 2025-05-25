@@ -24,7 +24,7 @@ def playgame(dir,player1,player2,size,index,randhistory,switch=False,tiefe1=None
             break
         start = time.time()
         if tiefe1 is not None:
-            move =player1(1,suchtiefe=tiefe1,time_limit=time_limit,moveordering=False)
+            move =player1(1,suchtiefe=tiefe1,time_limit=time_limit)
         else:
             move =player1(1,time_limit=time_limit)
         end = time.time()
@@ -139,31 +139,13 @@ def makerandomboard(dir,board=Hexgrid.Hexgrid):
         moves.append((player,move))
         player = board.nextplayer(player)
     return moves
-      
-def add_padding(board):
-        padded_board = np.zeros((13,13),dtype=int)
-        padded_board[1:-1,1:-1] = board
-
-        #padding
-        #oben und unten
-        padded_board[0,1:-1] = 1
-        padded_board[-1,1:-1] = 1
-        #links und rechts
-        padded_board[1:-1,0] = -1
-        padded_board[1:-1,-1] = -1
-        #ecken
-        padded_board[0,0] = 1 
-        padded_board[12,12] = 1 
-        padded_board[0,12] = 1 
-        padded_board[12,0] = 1 
-        #print(padded_board)
-        return padded_board   
+        
 
 def abstournament(rounds,size,depth1=None,depth2=None,time_limit=None):
     if depth1 is not None and depth2 is not None and time_limit is not None:
         workingdir = directoryrndabs+"-"+str(depth1)+"_"+str(depth2)+"_"+str(size)+"_"+str(time_limit)+"s"
     elif depth1 is not None and depth2 is not None:
-        workingdir = directoryrndabs+"-"+str(depth1)+"_"+str(depth2)+"_"+str(size)+"test"
+        workingdir = directoryrndabs+"-"+str(depth1)+"_"+str(depth2)+"_"+str(size)+"(2)"
     else:
         workingdir = directoryrndabs+"-"+str(size)
 
@@ -181,7 +163,7 @@ def abstournament(rounds,size,depth1=None,depth2=None,time_limit=None):
             print("Playing game: "+str(i))
             board = Hexgrid.Hexgrid(2,size,size)
             randommoves = makerandomboard(workingdir,board)
-            playgame(workingdir,board.makecomputermove,board.makecomputermove,size,i,randommoves,switch=True,board=board,tiefe2=depth1,tiefe1=depth1,time_limit=time_limit)
+            playgame(workingdir,board.makecomputermove,board.makecomputermove,size,i,randommoves,switch=True,board=board,tiefe2=depth1,tiefe1=depth2,time_limit=time_limit)
 
     else:
         open(workingdir+".json","w").close() #clear data before 
@@ -205,14 +187,14 @@ def cnntournament(rounds,size,depth1=None):
         print("Playing: " +str(rounds)+ " rounds")
         for i in range(rounds):
             print("Playing game: "+str(i))
-            board = Hexgrid.Hexgrid(1,size,size,cnn=True)
+            board = Hexgrid.Hexgrid(2,size,size,cnn=True)
             #randommoves=makerandomboard(workingdir,board)
             randommoves=[]
             playgame(workingdir,board.makecnnabsmove,board.makecomputermove,size,i,randommoves,board=board,tiefe2=depth1)
         print("switching sides")
         for i in range(rounds):
             print("Playing game: "+str(i))
-            board = Hexgrid.Hexgrid(1,size,size,cnn=True)
+            board = Hexgrid.Hexgrid(2,size,size,cnn=True)
             #randommoves=makerandomboard(workingdir,board)
             randommoves=[]
             playgame(workingdir,board.makecomputermove,board.makecnnabsmove,size,i,randommoves,switch=True,board=board,tiefe2=depth1)
@@ -240,7 +222,7 @@ if __name__ == "__main__":
     hg = Hexgrid.Hexgrid(2,6,6,cnn=False)
    
     #randomtournament(rounds=20,size=11)
-    abstournament(10,size=7,depth1=2,depth2=2)
+    abstournament(10,size=7,depth1=2,depth2=3, time_limit=5)
     #randomtournament(5,8)
     #cnntournament(10,11,depth1=2)
    

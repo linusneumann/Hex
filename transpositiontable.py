@@ -24,5 +24,5 @@ class TranspositionTable:
             return entry.value, entry.move
         elif entry.flag == "UPPERBOUND" and entry.value < alpha:
             return entry.value, entry.move
-
+        
         return None  # sonst nicht verwertbar

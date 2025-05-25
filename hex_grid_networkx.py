@@ -219,7 +219,7 @@ class Hexgrid:
                 self.ds_blue.undo_union()
             else:
                 print("player ist falsch: "+ player )
-
+        self.win = None
         self.findwinner()
 
 
@@ -375,17 +375,18 @@ class Hexgrid:
             start_time = time.time()
         self.findwinner()
         if tiefe == 0  or self.win != None: 
-            if self.win == "red":
-                return -float(self.max_resistance),None,None if self.startplayer == 1 else float(self.max_resistance)
+            """if self.win == "red":
+                return float(self.max_resistance),None,None if self.startplayer == 1 else -float(self.max_resistance)
             elif self.win == "blue":
-                return -float(self.max_resistance),None,None if self.startplayer == 2 else -float(self.max_resistance)
+                return float(self.max_resistance),None,None if self.startplayer == 2 else -float(self.max_resistance)"""
+            
             return self.calcres(), None,None
         
         # transposition table makes it faster 
         hash = self.hashboard()
         history = []
 
-        if player == 1:
+        if self.startplayer == 1:
             tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
         else:
             tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
@@ -405,7 +406,7 @@ class Hexgrid:
                 return maxWert, besterzug, history  # time limit reached
             
             self.makemove(zug,player)
-            wert,_,_ = self.minbeta(tiefe-1,maxWert, beta,self.nextplayer(player),start_time=start_time,time_limit=time_limit)  # make player differ 
+            wert,_ ,_ = self.minbeta(tiefe-1,maxWert, beta,self.nextplayer(player),start_time=start_time,time_limit=time_limit)  # make player differ 
             self.undomove(zug,player)
             
             history.append((zug,wert))
@@ -435,18 +436,20 @@ class Hexgrid:
         if start_time is None:
             start_time = time.time()
         self.findwinner()
-        if tiefe == 0  or self.win != None: 
-            if self.win == "red":
+        
+        if tiefe == 0  or self.win != None:
+            return self.calcres(), None,None
+            """ if self.win == "red":
                 return -float(self.max_resistance),None,None if self.startplayer == 1 else float(self.max_resistance)
             elif self.win == "blue":
-                return -float(self.max_resistance),None,None if self.startplayer == 2 else -float(self.max_resistance)
-            return self.calcres(), None,None
+                return -float(self.max_resistance),None,None if self.startplayer == 2 else -float(self.max_resistance)"""
+            
         
         
         hash = self.hashboard()
         history = []
 
-        if player == 1:
+        if self.startplayer == 1:
             tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
         else:
             tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
@@ -507,7 +510,7 @@ class Hexgrid:
             
             hash = self.hashboard()
             
-            if player == 1:
+            if self.startplayer == 1:
                 tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
             else:
                 tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
@@ -561,7 +564,7 @@ class Hexgrid:
         
         hash = self.hashboard()
         
-        if player == 1:
+        if self.startplayer == 1:
             tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
         else:
             tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
@@ -709,6 +712,8 @@ class Hexgrid:
         self.ds_blue.history = []
         self.ds_red.history = [] #needed for consistency otherwise next undo would remove legal move 
         return moves[randnr]
+    
+
     
     def makecnnmove(self,player,suchtiefe=None,time_limit=None):
         if self.win is None:
@@ -961,11 +966,12 @@ class Hexgrid:
         foo = " "
         while(self.win == None ):
             #move = make_tuple(self.makeplayermove(player=1))
-            move = self.makecomputermove(1)
+            move = self.makecomputermove(1,suchtiefe=2)
 
             #self.startplayer=2
             print(self.startplayer)
             #print(self.calccnn(move=move))
+            self.displayboard()
             labels1,labels2=self.showboardeval()
             self.findwinner() 
             if self.win != None:
@@ -977,10 +983,12 @@ class Hexgrid:
             foo.strip('\n')
             self.findwinner() 
             if "show" in foo:
-                self.displayboard()
+                self.displayboard(arr1=labels1,arr2=labels2)
                 pass
             
             #self.makeplayermove(player=1)
+            self.makecomputermove(2,suchtiefe=3)
+            self.displayboard()
             #print(self.startplayer)
             #print(self.calcres())
             self.findwinner() 
@@ -1010,15 +1018,24 @@ def add_padding(board):
         padded_board[12,0] = 1 
         #print(padded_board)
         return padded_board   
+def makerandomboard(dir,board=Hexgrid):
+    steps = np.random.randint(5,10,dtype=int)
+    player = 1
+    moves = []
 
+    for i in range(steps):
+        move =(board.makerandommove(player))
+        moves.append((player,move))
+        player = board.nextplayer(player)
+    return moves
 
 if __name__ == "__main__":
     hg = Hexgrid(2,6,6,cnn=False)
     #hg.startgame()
     #randommoves = makerandomboard("tournament/hallo123",hg)
-    hg.makeplayermove(1)
-    #hg.makecnnabsmove(1)
-    hg.makeplayermove(1)
+    #hg.makeplayermove(1)
+    hg.test(1)
+    #hg.makeplayermove(1)
     #arr1 = hg.showboardeval2()
     #hg.displayboard(arr1=arr1)
     #ecken = rows,cols ; 0,cols ; 0,0 ;rows,0
