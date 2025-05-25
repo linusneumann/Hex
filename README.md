@@ -5,7 +5,7 @@ This repsoitory contains the source code for the Bachelors thesis "Systematische
 The requirements for this project are: 
 ```
 networkx
-matplotlib
+matplotlib (for better representation and for statistics)
 numpy
 tensorflow (only if you want to use the neural network)
 
@@ -17,6 +17,28 @@ To play a game of Hex against the computer use
 ```
 Make sure you are in the correct directory!
 This will launch a game with search depth 2 and size [size]. For playing against the CNN + ABS i recommend to play only on search depth 1.
-Otherwise you will wait very long.
-
+Otherwise you will wait very long.  
+After the execution of the script it should look like this (without matplotlib)  
+```
+  [0 1 2 3 4 5]
+0 [0 0 0 0 0 0]
+1 [0 0 0 0 0 0]
+2 [0 0 0 0 0 0]
+3 [0 0 0 0 0 0]
+4 [0 0 0 0 0 0]
+5 [0 0 0 0 0 0]
+Make move: format"(x,x)"
+```
+And this with matplotlib:  
+![graph](graph_pic.png)  
 This was testet on Windows 11 with wsl.
+
+The figures were created with the `graphs.py` file.
+You will have to configure it yourself.
+
+To run a tournament execute the file `tournament.py` file.
+
+The dataset used for training is in 
+ ```
+actions/v4-11x11-mohex-mohex-cg2010-vs-mohex-mohex-weak.txt
+```
