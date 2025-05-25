@@ -15,10 +15,10 @@ To play a game of Hex against the computer use
 ```
 ./play.sh [size]
 ```
-Make sure you are in the correct directory!
-This will launch a game with search depth 2 and size [size]. For playing against the CNN + ABS i recommend to play only on search depth 1.
-Otherwise you will wait very long.  
-After the execution of the script it should look like this (without matplotlib)  
+Make sure you are in the correct directory!  
+This will launch a game with search depth 2 and size [size].  
+ 
+After the execution of the script it should look like this (without matplotlib) 
 ```
   [0 1 2 3 4 5]
 0 [0 0 0 0 0 0]
@@ -41,4 +41,8 @@ To run a tournament execute the file `tournament.py` file.
 The dataset used for training is in 
  ```
 actions/v4-11x11-mohex-mohex-cg2010-vs-mohex-mohex-weak.txt
+```
+There is a small test file it tests the most basic functions
+```
+test.py
 ```
