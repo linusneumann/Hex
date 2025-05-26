@@ -36,7 +36,7 @@ This was testet on Windows 11 with wsl.
 The figures were created with the `graphs.py` file.
 You will have to configure it yourself.  
 
-The logic for playing the game is in `hex_grid_network.py`.
+The logic for playing the game is in `hex_grid_networkx.py`.
 
 To run a tournament execute the file `tournament.py` file.
 
