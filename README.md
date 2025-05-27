@@ -48,3 +48,7 @@ There is a small test file it tests the most basic functions
 ```
 test.py
 ```
+The data for the figures is in 
+```
+plotting/
+```
