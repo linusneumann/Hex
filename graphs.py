@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import json
 import numpy as np
 
-with open("history_4_sparse_cce_64_loss1.json", "r") as f:
+with open("plotting/history_4_sparse_cce_64_loss1.json", "r") as f:
     hist1 = json.load(f)
 
-with open("11x11x5_4_d5_w128_sparse_cce_dense_64_acc1.json", "r") as f:
+with open("plotting/11x11x5_4_d5_w128_sparse_cce_dense_64_acc1.json", "r") as f:
     hist2 = json.load(f)
-with open("11x11x3_4_d5_w128_sparse_cce_dense_64_acc1.json", "r") as f:
+with open("plotting/11x11x3_4_d5_w128_sparse_cce_dense_64_acc1.json", "r") as f:
     hist3 = json.load(f)
 # Plot Loss
 with open("top_k_pred.txt","r") as f:
