@@ -47,7 +47,7 @@ class Hexgrid:
         self.G_hex = self.hexagonal_grid_graph(self.rows, self.cols, self.node_resistance, self.average_edge_resistance)
         if cnn:
             try:
-                self.cnn = keras.models.load_model("4_64-30-cnntest13x13x5.keras")
+                self.cnn = keras.models.load_model("4_64-30-d5-cnntest11x11x5.keras")
             except ImportError:
                 print("Could not load model. Tensorflow or Keras is not installed!")
         else:
@@ -123,7 +123,7 @@ class Hexgrid:
 #
 #   
 #----------------------------------------------------------------------------------------------------------------------------------------------
-
+    # sets the weights of nodes and edeges and handles union
     def setWeight(self,node,player,player1weight,player2weight,eval=False):
         if self.G.nodes[node] == None:
             return -1
@@ -138,17 +138,8 @@ class Hexgrid:
             resistance2 = self.average_edge_resistance(self.G.nodes[node]['resistance2'], self.G.nodes[nbr]['resistance2'])
             self.G.edges[(node,nbr)]['weight1'] = max(resistance1,self.min_resistance)
             self.G.edges[(node,nbr)]['weight2'] = max(resistance2,self.min_resistance)
-            """if self.G.nodes[nbr]['resistance1'] == player1weight  and self.G.nodes[nbr]['resistance2'] == player2weight and player != 3:
-                if player ==1:
-                    self.ds_red.union(nbr, node)
-                elif player == 2:
-                    self.ds_blue.union(nbr, node)
-                else:
-                    continue"""
             
-                #print(f"Player: {player}, node: {node}, nbr: {nbr}, node_color: {self.G.nodes[node]['resistance1']}/{self.G.nodes[node]['resistance2']}")
-               
-
+            #print(f"Player: {player}, node: {node}, nbr: {nbr}, node_color: {self.G.nodes[node]['resistance1']}/{self.G.nodes[node]['resistance2']}")
 
             if player == 1 and self.G.nodes[node]['resistance1'] == player1weight and nbr_res1 == player1weight and player != 3 and eval is False:
                 self.ds_red.union(nbr, node)
@@ -385,12 +376,15 @@ class Hexgrid:
         history = []
 
         if self.startplayer == 1:
-            tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
+            tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta,player)
         else:
-            tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
+            tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta,player)
+
         if tt_result is not None:
-            history.append((tt_result[1],tt_result[0]))
-            return tt_result[0],tt_result[1], history
+            wert, zug, flag = tt_result
+            if flag == "EXACT":
+                history.append((zug, wert))
+                return wert, zug, history
         
         if zugliste is None: # we dont get zugliste 
             zugliste = self.getMoves(player)
@@ -423,10 +417,11 @@ class Hexgrid:
         else:
             flag = "EXACT"
 
-        if player == 1:
-            self.hashtable1.store(hash,maxWert,besterzug,tiefe,flag)
-        else:
-            self.hashtable2.store(hash,maxWert,besterzug,tiefe,flag)
+        if flag == "EXACT":
+            if self.startplayer == 1:
+                self.hashtable1.store(hash, maxWert, besterzug, tiefe, flag,player)
+            else:
+                self.hashtable2.store(hash, maxWert, besterzug, tiefe, flag,player)
         
         return maxWert,besterzug,history
  
@@ -448,13 +443,15 @@ class Hexgrid:
         history = []
 
         if self.startplayer == 1:
-            tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
+            tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta,player)
         else:
-            tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
+            tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta,player)
 
         if tt_result is not None:
-            history.append((tt_result[1],tt_result[0]))
-            return tt_result[0],tt_result[1], history
+            wert, zug, flag = tt_result
+            if flag == "EXACT":
+                history.append((zug, wert))
+                return wert, zug, history
         
         
         if zugliste is None: # we dont get zugliste 
@@ -490,10 +487,11 @@ class Hexgrid:
             flag = "EXACT"
         
        
-        if player == 1:
-            self.hashtable1.store(hash,minWert,besterzug,tiefe,flag)
-        else:
-            self.hashtable2.store(hash,minWert,besterzug,tiefe,flag)
+        if flag == "EXACT":
+            if self.startplayer == 1:
+                self.hashtable1.store(hash, minWert, besterzug, tiefe, flag,player)
+            else:
+                self.hashtable2.store(hash, minWert, besterzug, tiefe, flag,player)
         
         return minWert,besterzug,history
     
@@ -509,11 +507,15 @@ class Hexgrid:
             hash = self.hashboard()
             
             if self.startplayer == 1:
-                tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
+                tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta,player)
             else:
-                tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
+                tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta,player)
+
             if tt_result is not None:
-                return tt_result[0],tt_result[1], None
+                wert, zug, flag = tt_result
+                if flag == "EXACT":
+                    history.append((zug, wert))
+                    return wert, zug, history
             
             if zugliste is None: # we dont get zugliste 
                 zugliste = self.getMoves(player)
@@ -543,10 +545,11 @@ class Hexgrid:
             else:
                 flag = "EXACT"
             
-            if player == 1:
-                self.hashtable1.store(hash,maxWert,besterzug,tiefe,flag)
-            else:
-                self.hashtable2.store(hash,maxWert,besterzug,tiefe,flag)
+            if flag == "EXACT":
+                if self.startplayer == 1:
+                    self.hashtable1.store(hash, maxWert, besterzug, tiefe, flag,player)
+                else:
+                    self.hashtable2.store(hash, maxWert, besterzug, tiefe, flag,player)
             
             return maxWert,besterzug,history
 
@@ -563,12 +566,15 @@ class Hexgrid:
         hash = self.hashboard()
         
         if self.startplayer == 1:
-            tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta)
+            tt_result = self.hashtable1.retrieve(hash, tiefe, alpha, beta,player)
         else:
-            tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta)
+            tt_result = self.hashtable2.retrieve(hash, tiefe, alpha, beta,player)
 
         if tt_result is not None:
-            return tt_result[0],tt_result[1], None
+            wert, zug, flag = tt_result
+            if flag == "EXACT":
+                history.append((zug, wert))
+                return wert, zug, history
         
         
         if zugliste is None: # we dont get zugliste 
@@ -600,10 +606,11 @@ class Hexgrid:
         else:
             flag = "EXACT"
         
-        if player == 1:
-            self.hashtable1.store(hash,minWert,besterzug,tiefe,flag)
-        else:
-            self.hashtable2.store(hash,minWert,besterzug,tiefe,flag)
+        if flag == "EXACT":
+            if self.startplayer == 1:
+                self.hashtable1.store(hash, minWert, besterzug, tiefe, flag,player)
+            else:
+                self.hashtable2.store(hash, minWert, besterzug, tiefe, flag,player)
         
         return minWert,besterzug,history
     #returns colors for visualization
@@ -721,23 +728,26 @@ class Hexgrid:
                 board = self.converttomatrix()
                 board.astype(dtype=np.float32)
                 #for 13x13x5
-                padded_board = add_padding(board)
-                only_black = add_padding((board ==1) * 1)
-                only_white = add_padding((board == -1) * -1)
+                #padded_board = add_padding(board)
+                #only_black = add_padding((board ==1) * 1)
+                #only_white = add_padding((board == -1) * -1)
+                only_black =(board ==1) * 1
+                only_white = (board == -1) * -1
                 #for 11x11x3 switch board and padded_board
-                color_plane = np.ones_like(padded_board) * (1 if player == 1 else -1)
-                next_player_plane = np.ones_like(padded_board) * (1 if player == 1 else -1)
-                input_planes = np.stack([padded_board,only_black,only_white, color_plane, next_player_plane], axis=-1)
+                color_plane = np.ones_like(board) * (1 if player == 1 else -1)
+                next_player_plane = np.ones_like(board) * (1 if player == 1 else -1)
+                input_planes = np.stack([board,only_black,only_white, color_plane, next_player_plane], axis=-1)
 
                 tensor = tf.convert_to_tensor(input_planes[None, ...], dtype=tf.float32)
-                raw = self.cnn.predict(tensor)
+                raw = self.cnn.predict(tensor,verbose=0)[0]
                 #print(raw)
-                prediction = np.argsort(*raw)[::-1][:10]    #look at the 10 highes rated moves
+                prediction = np.argsort(raw)[::-1][:10]    #look at the 10 highes rated moves
 
             for pred in prediction:
                 row, col = divmod(pred,11)
                 res = [move for move in validmoves if (row.item(),col.item()) == move]
                 if res :
+                    print(f"CNN making move {(row.item(),col.item())}")
                     self.makemove((row.item(),col.item()),player)
                     self.ds_blue.history = []
                     self.ds_red.history = [] #needed for consistency otherwise next undo would remove legal move 
@@ -873,14 +883,15 @@ class Hexgrid:
                 board = self.converttomatrix()
                 board.astype(dtype=np.float32)
                 #for 13x13x5
-                padded_board = add_padding(board)
-                only_black = add_padding((board ==1) * 1)
-                only_white = add_padding((board == -1) * -1)
+                #padded_board = add_padding(board)
+                #only_black = add_padding((board ==1) * 1)
+                #only_white = add_padding((board == -1) * -1)
+                only_black =(board ==1) * 1
+                only_white = (board == -1) * -1
                 #for 11x11x3 switch board and padded_board
-                color_plane = np.ones_like(padded_board) * (1 if player == 1 else -1)
-                next_player_plane = np.ones_like(padded_board) * (1 if player == 1 else -1)
-                input_planes = np.stack([padded_board,only_black,only_white, color_plane, next_player_plane], axis=-1)
-
+                color_plane = np.ones_like(board) * (1 if player == 1 else -1)
+                next_player_plane = np.ones_like(board) * (1 if player == 1 else -1)
+                input_planes = np.stack([board,only_black,only_white, color_plane, next_player_plane], axis=-1)
                 tensor = tf.convert_to_tensor(input_planes[None, ...], dtype=tf.float32)
                 raw = self.cnn.predict(tensor,verbose=0)[0]
 
@@ -966,7 +977,7 @@ class Hexgrid:
         foo = " "
         while(self.win == None ):
             #move = make_tuple(self.makeplayermove(player=1))
-            move = self.makecomputermove(1,suchtiefe=2)
+            move = self.makecnnabsmove(1,suchtiefe=2)
 
             #self.startplayer=2
             print(self.startplayer)
@@ -987,7 +998,7 @@ class Hexgrid:
                 pass
             
             #self.makeplayermove(player=1)
-            self.makecomputermove(2,suchtiefe=3)
+            self.makecomputermove(2,suchtiefe=5)
             self.displayboard()
             #print(self.startplayer)
             #print(self.calcres())
@@ -1022,6 +1033,8 @@ def makerandomboard(dir,board=Hexgrid):
     steps = np.random.randint(5,10,dtype=int)
     player = 1
     moves = []
+    if steps % 2 == 1:
+        steps = steps-1
 
     for i in range(steps):
         move =(board.makerandommove(player))
@@ -1030,12 +1043,11 @@ def makerandomboard(dir,board=Hexgrid):
     return moves
 
 if __name__ == "__main__":
-    hg = Hexgrid(2,5,5,cnn=False)
+    # For playing with CNN size needs to be 11x11 and cnn=True
+    hg = Hexgrid(2,11,11,cnn=True)
     #hg.startgame()
     #randommoves = makerandomboard("tournament/hallo123",hg)
-    #hg.makeplayermove(1)
-    #hg.test(1)
-    #hg.makeplayermove(1)
-    #arr1 = hg.showboardeval2()
-    hg.displayboard()
+    hg.test(1)
+    
+    #hg.displayboard()
     #ecken = rows,cols ; 0,cols ; 0,0 ;rows,0

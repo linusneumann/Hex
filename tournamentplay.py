@@ -60,7 +60,7 @@ def playgame(dir,player1,player2,size,index,randhistory,switch=False,tiefe1=None
         board.findwinner()
         if board.win != None:
             break
-        # idk happens sometimes its a quick fix but not solution for the real problem
+        # idk happens sometimes its a quick fix but not a solution for the real problem
         if move and move2 == None: 
             board.displayboard()
             break
@@ -133,6 +133,8 @@ def writetofile(data,times,filename,size,game_index,switch=False):
 def makerandomboard(dir,board=Hexgrid.Hexgrid):
     steps = np.random.randint(5,10,dtype=int)
     player = 1
+    if steps % 2 == 1:
+        steps = steps-1
     moves = []
 
     for i in range(steps):
@@ -144,7 +146,7 @@ def makerandomboard(dir,board=Hexgrid.Hexgrid):
 
 def abstournament(rounds,size,depth1=None,depth2=None,time_limit=None):
     if depth1 is not None and depth2 is not None and time_limit is not None:
-        workingdir = directoryrndabs+"-"+str(depth1)+"_"+str(depth2)+"_"+str(size)+"_"+str(time_limit)+"s"
+        workingdir = directoryrndabs+"-"+str(depth1)+"_"+str(depth2)+"_"+str(size)+"_"+str(time_limit)+"s(2)"
     elif depth1 is not None and depth2 is not None:
         workingdir = directoryrndabs+"-"+str(depth1)+"_"+str(depth2)+"_"+str(size)+"(2)"
     else:
@@ -183,7 +185,7 @@ def abstournament(rounds,size,depth1=None,depth2=None,time_limit=None):
 
 def cnntournament(rounds,size,depth1=None):
     if depth1 is not None :
-        workingdir = directorycnnabs+"-"+str(depth1)+"_"+str(size)+"-norand"
+        workingdir = directorycnnabs+"-"+str(depth1)+"_"+str(size)+"-11x11x5"
         open(workingdir+".json","w").close() #clear data before  
         print("Playing: " +str(rounds)+ " rounds")
         for i in range(rounds):
@@ -191,14 +193,14 @@ def cnntournament(rounds,size,depth1=None):
             board = Hexgrid.Hexgrid(2,size,size,cnn=True)
             #randommoves=makerandomboard(workingdir,board)
             randommoves=[]
-            playgame(workingdir,board.makecnnabsmove,board.makecomputermove,size,i,randommoves,board=board,tiefe2=depth1)
+            playgame(workingdir,board.makecnnmove,board.makecomputermove,size,i,randommoves,board=board,tiefe2=depth1)
         print("switching sides")
         for i in range(rounds):
             print("Playing game: "+str(i))
             board = Hexgrid.Hexgrid(2,size,size,cnn=True)
             #randommoves=makerandomboard(workingdir,board)
             randommoves=[]
-            playgame(workingdir,board.makecomputermove,board.makecnnabsmove,size,i,randommoves,switch=True,board=board,tiefe2=depth1)
+            playgame(workingdir,board.makecomputermove,board.makecnnmove,size,i,randommoves,switch=True,board=board,tiefe2=depth1)
     else:
         workingdir = directorycnnabs+"-"+str(size)
         open(workingdir+".json","w").close() #clear data before 
@@ -223,7 +225,7 @@ if __name__ == "__main__":
     hg = Hexgrid.Hexgrid(2,6,6,cnn=False)
    
     #randomtournament(rounds=20,size=11)
-    abstournament(10,size=7,depth1=2,depth2=3, time_limit=5)
+    abstournament(10,size=7,depth1=4,depth2=2,time_limit=10)
     #randomtournament(5,8)
     #cnntournament(10,11,depth1=2)
    
